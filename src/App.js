@@ -14,15 +14,10 @@ function App() {
     const [idInstance, setIdInstance] = useState("1101822802");
     const [apiTokenInstance, setApiTokenInstance] = useState("9a7fe7fd2eca4517aa6f3b9af3d08933494ff027e99940c1b8");
     const [currentContactPhone, setCurrentContactPhone] = useState(79991150041);
+    const [visibleContactPhone, setVisibleContactPhone] = useState("+7 (999) 115-00-41");
     const [sendingMessage, setSendingMessage] = useState("");
     const [messages, setMessages] = useState({
-        79991150041: [
-            { text: "Text 1", me: false },
-            { text: "Text 2", me: true },
-            { text: "Text 3", me: true },
-            { text: "Text 4", me: false },
-            { text: "Text 1", me: false },
-        ],
+        79991150041: [],
     });
     console.log(messages);
 
@@ -90,6 +85,12 @@ function App() {
             .catch(() => awaitMessage());
     };
 
+    const saveContactPhone = (value) => {
+        setCurrentContactPhone(value);
+        console.log("phone", value);
+        setAddChatModalVisibility(false);
+    };
+
     const [messageApi, messageApiContext] = message.useMessage();
     const openMessage = (type, content) => {
         messageApi.open({
@@ -106,7 +107,7 @@ function App() {
 
             <div className="App">
                 <Header
-                    phone={currentContactPhone}
+                    phone={visibleContactPhone}
                     openLoginModal={() => setLoginModalVisibility(true)}
                     openAddChatModal={() => setAddChatModalVisibility(true)}
                 />
@@ -122,7 +123,9 @@ function App() {
                     <AddChatModal
                         visibility={addChatModalVisibility}
                         currentContactPhone={currentContactPhone}
+                        setVisibleContactPhone={setVisibleContactPhone}
                         setCurrentContactPhone={setCurrentContactPhone}
+                        saveContactPhone={saveContactPhone}
                         closeModal={() => setAddChatModalVisibility(false)}
                     />
                 )}

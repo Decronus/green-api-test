@@ -1,0 +1,21 @@
+.modal-button-wrap {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-content {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.modal-input {
+    height: 36px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    padding: 0 10px;
+    outline: none;
+    font-size: 15px;
+}

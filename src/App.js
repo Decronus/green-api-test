@@ -26,6 +26,25 @@ function App() {
     });
     console.log(messages);
 
+    const sendMessageAxios = (body) => {
+        return axiosInstance.post(
+            `https://api.green-api.com/waInstance${idInstance}/SendMessage/${apiTokenInstance}`,
+            body
+        );
+    };
+
+    const receiveNotificationAxios = () => {
+        return axiosInstance.get(
+            `https://api.green-api.com/waInstance${idInstance}/ReceiveNotification/${apiTokenInstance}`
+        );
+    };
+
+    const deleteNotificationAxios = (receiptId) => {
+        return axiosInstance.delete(
+            `https://api.green-api.com/waInstance${idInstance}/DeleteNotification/${apiTokenInstance}/${receiptId}`
+        );
+    };
+
     const scrollPageToBottom = () => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     };
@@ -36,19 +55,12 @@ function App() {
         setMessages({ ...newMessages });
     };
 
-    const deleteNotification = (receiptId) => {
-        return axiosInstance.delete(
-            `https://api.green-api.com/waInstance${idInstance}/DeleteNotification/${apiTokenInstance}/${receiptId}`
-        );
-    };
-
     const sendMessage = (message) => {
         const body = {
             chatId: `${currentContactPhone}@c.us`,
             message: sendingMessage,
         };
-        axiosInstance
-            .post(`https://api.green-api.com/waInstance${idInstance}/SendMessage/${apiTokenInstance}`, body)
+        sendMessageAxios(body)
             .then(() => {
                 updateMessages(message, true);
                 setSendingMessage("");
@@ -58,8 +70,7 @@ function App() {
     };
 
     const awaitMessage = () => {
-        axiosInstance
-            .get(`https://api.green-api.com/waInstance${idInstance}/ReceiveNotification/${apiTokenInstance}`)
+        receiveNotificationAxios()
             .then((res) => {
                 console.log("data", res);
                 if (res.data) {
@@ -69,13 +80,14 @@ function App() {
                         const contact = resBody.senderData.chatId.split("@")[0];
                         updateMessages(message, false, contact);
                     }
-                    deleteNotification(res.data.receiptId);
+                    deleteNotificationAxios(res.data.receiptId)
+                        .then(() => awaitMessage())
+                        .catch(() => deleteNotificationAxios(res.data.receiptId));
+                } else {
+                    awaitMessage();
                 }
-                // awaitMessage();
-                // setSendingMessage("");
-                // scrollPageToBottom();
             })
-            .catch((error) => console.log("Ошибка при ожидании сообщения: ", error));
+            .catch(() => awaitMessage());
     };
 
     const [messageApi, messageApiContext] = message.useMessage();

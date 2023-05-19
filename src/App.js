@@ -19,7 +19,6 @@ function App() {
     const [messages, setMessages] = useState({
         79991150041: [],
     });
-    console.log(messages);
 
     const sendMessageAxios = (body) => {
         return axiosInstance.post(
@@ -51,33 +50,37 @@ function App() {
     };
 
     const sendMessage = (message) => {
-        const body = {
-            chatId: `${currentContactPhone}@c.us`,
-            message: sendingMessage,
-        };
-        sendMessageAxios(body)
-            .then(() => {
-                updateMessages(message, true);
-                setSendingMessage("");
-                scrollPageToBottom();
-            })
-            .catch(() => openMessage("error", "Неудачная отправка сообщения"));
+        if (message) {
+            const body = {
+                chatId: `${currentContactPhone}@c.us`,
+                message: sendingMessage,
+            };
+            sendMessageAxios(body)
+                .then(() => {
+                    updateMessages(message, true);
+                    setSendingMessage("");
+                    scrollPageToBottom();
+                })
+                .catch(() => openMessage("error", "Неудачная отправка сообщения"));
+        }
     };
 
     const awaitMessage = () => {
         receiveNotificationAxios()
             .then((res) => {
-                console.log("data", res);
                 if (res.data) {
                     const resBody = res.data.body;
+                    const receiptId = res.data.receiptId;
+
                     if (resBody.typeWebhook === "incomingMessageReceived") {
                         const message = resBody.messageData.textMessageData.textMessage;
                         const contact = resBody.senderData.chatId.split("@")[0];
                         updateMessages(message, false, contact);
                     }
-                    deleteNotificationAxios(res.data.receiptId)
+
+                    deleteNotificationAxios(receiptId)
                         .then(() => awaitMessage())
-                        .catch(() => deleteNotificationAxios(res.data.receiptId));
+                        .catch(() => deleteNotificationAxios(receiptId));
                 } else {
                     awaitMessage();
                 }
@@ -87,7 +90,6 @@ function App() {
 
     const saveContactPhone = (value) => {
         setCurrentContactPhone(value);
-        console.log("phone", value);
         setAddChatModalVisibility(false);
     };
 

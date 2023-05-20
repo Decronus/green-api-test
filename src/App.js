@@ -9,8 +9,9 @@ import axiosInstance from "./utils/axios";
 import { message } from "antd";
 
 function App() {
-    const [loginModalVisibility, setLoginModalVisibility] = useState(false);
+    const [loginModalVisibility, setLoginModalVisibility] = useState(true);
     const [addChatModalVisibility, setAddChatModalVisibility] = useState(false);
+    const [initInstance, setInitInstance] = useState(true);
     const [idInstance, setIdInstance] = useState("");
     const [apiTokenInstance, setApiTokenInstance] = useState("");
     const [currentContactPhone, setCurrentContactPhone] = useState(null);
@@ -48,8 +49,11 @@ function App() {
 
     const updateMessages = (message, me, contact = null) => {
         const newMessages = messages;
-        newMessages[contact ?? currentContactPhone] = [];
-        newMessages[contact ?? currentContactPhone].push({ text: message, me: me });
+        const phone = contact ?? currentContactPhone;
+        if (!newMessages[phone]) {
+            newMessages[phone] = [];
+        }
+        newMessages[phone].push({ text: message, me: me });
         setMessages({ ...newMessages });
     };
 
@@ -83,13 +87,13 @@ function App() {
                     }
 
                     deleteNotificationAxios(receiptId)
-                        .then(() => awaitMessage())
+                        .then(() => setTimeout(awaitMessage(), 0))
                         .catch(() => deleteNotificationAxios(receiptId));
                 } else {
-                    awaitMessage();
+                    setTimeout(awaitMessage(), 0);
                 }
             })
-            .catch(() => awaitMessage());
+            .catch(() => setTimeout(awaitMessage(), 0));
     };
 
     const saveContactPhone = (value) => {
@@ -104,8 +108,6 @@ function App() {
             content: content,
         });
     };
-
-    useEffect(() => awaitMessage(), []);
 
     return (
         <>
@@ -144,7 +146,11 @@ function App() {
                         apiTokenInstance={apiTokenInstance}
                         setIdInstance={setIdInstance}
                         setApiTokenInstance={setApiTokenInstance}
+                        setAddChatModalVisibility={setAddChatModalVisibility}
                         closeModal={() => setLoginModalVisibility(false)}
+                        initInstance={initInstance}
+                        setInitInstance={setInitInstance}
+                        awaitMessage={awaitMessage}
                     />
                 )}
             </div>

@@ -28,5 +28,5 @@ Javascript, React.js, Antdesign, Axios
 
 ### Контакты для связи по всем вопросам
 
-• al.zotin@mail.ru
+• al.zotin@mail.ru\
 • Telegram A_Zotin

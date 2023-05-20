@@ -24,7 +24,7 @@ function App() {
         ],
     });
 
-    const getStatusInstanceAxios = (body) => {
+    const getStatusInstanceAxios = () => {
         return axiosInstance.get(
             `https://api.green-api.com/waInstance${idInstance}/getStatusInstance/${apiTokenInstance}`
         );
@@ -99,9 +99,8 @@ function App() {
                     setTimeout(awaitMessage, 0);
                 }
             })
-            .catch((error) => {
+            .catch(() => {
                 setTimeout(awaitMessage, 2000);
-                console.log("error", error);
             });
     };
 

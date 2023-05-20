@@ -14,7 +14,7 @@ const LoginModal = ({ visibility, idInstance, setIdInstance, apiTokenInstance, s
                 />
                 <input
                     className="modal-input"
-                    type="text"
+                    type="password"
                     placeholder="Введите apiTokenInstance"
                     value={apiTokenInstance}
                     onChange={(event) => setApiTokenInstance(event.target.value)}

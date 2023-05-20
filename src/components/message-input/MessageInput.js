@@ -1,7 +1,7 @@
 import { Input } from "antd";
 import "./style.css";
 
-const MessageInput = ({ sendMessage, sendingMessage, setSendingMessage }) => {
+const MessageInput = ({ currentContactPhone, sendMessage, sendingMessage, setSendingMessage }) => {
     return (
         <div className="message-input-block">
             <Input
@@ -10,6 +10,7 @@ const MessageInput = ({ sendMessage, sendingMessage, setSendingMessage }) => {
                 onChange={(event) => setSendingMessage(event.target.value)}
                 placeholder="Введите сообщение"
                 onPressEnter={(event) => sendMessage(event.target.value)}
+                disabled={!currentContactPhone}
             />
         </div>
     );

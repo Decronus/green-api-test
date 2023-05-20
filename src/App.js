@@ -11,13 +11,16 @@ import { message } from "antd";
 function App() {
     const [loginModalVisibility, setLoginModalVisibility] = useState(false);
     const [addChatModalVisibility, setAddChatModalVisibility] = useState(false);
-    const [idInstance, setIdInstance] = useState("1101822802");
-    const [apiTokenInstance, setApiTokenInstance] = useState("9a7fe7fd2eca4517aa6f3b9af3d08933494ff027e99940c1b8");
-    const [currentContactPhone, setCurrentContactPhone] = useState(79991150041);
-    const [visibleContactPhone, setVisibleContactPhone] = useState("+7 (999) 115-00-41");
+    const [idInstance, setIdInstance] = useState("");
+    const [apiTokenInstance, setApiTokenInstance] = useState("");
+    const [currentContactPhone, setCurrentContactPhone] = useState(null);
+    const [visibleContactPhone, setVisibleContactPhone] = useState("");
     const [sendingMessage, setSendingMessage] = useState("");
     const [messages, setMessages] = useState({
-        79991150041: [],
+        79999999999: [
+            { text: "Example text 1", me: true },
+            { text: "Example text 2", me: false },
+        ],
     });
 
     const sendMessageAxios = (body) => {
@@ -45,6 +48,7 @@ function App() {
 
     const updateMessages = (message, me, contact = null) => {
         const newMessages = messages;
+        newMessages[contact ?? currentContactPhone] = [];
         newMessages[contact ?? currentContactPhone].push({ text: message, me: me });
         setMessages({ ...newMessages });
     };
@@ -113,9 +117,10 @@ function App() {
                     openLoginModal={() => setLoginModalVisibility(true)}
                     openAddChatModal={() => setAddChatModalVisibility(true)}
                 />
-                <Chat messages={messages[`${currentContactPhone}`]} />
+                <Chat messages={messages[`${currentContactPhone}`]} currentContactPhone={currentContactPhone} />
 
                 <MessageInput
+                    currentContactPhone={currentContactPhone}
                     sendMessage={sendMessage}
                     sendingMessage={sendingMessage}
                     setSendingMessage={setSendingMessage}

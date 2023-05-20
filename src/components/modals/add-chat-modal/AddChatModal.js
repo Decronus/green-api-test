@@ -24,6 +24,12 @@ const AddChatModal = ({ visibility, saveContactPhone, setVisibleContactPhone, cl
         saveContactPhone(phoneWithoutNum);
     };
 
+    const onKeyUp = (event) => {
+        if (event.key === "Enter" && phoneLength >= 11) {
+            handleSaveContactPhone();
+        }
+    };
+
     return (
         <Modal title="Создать чат" open={visibility} width={400} onCancel={closeModal} footer={null}>
             <div className="modal-content">
@@ -34,6 +40,7 @@ const AddChatModal = ({ visibility, saveContactPhone, setVisibleContactPhone, cl
                     placeholder="Номер телефона контакта"
                     ref={phoneRef}
                     onChange={(event) => calcPhoneLength(event)}
+                    onKeyUp={onKeyUp}
                 />
                 <div className="modal-button-wrap">
                     <Button onClick={closeModal}>Отмена</Button>

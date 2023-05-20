@@ -1,5 +1,6 @@
 import "../style.css";
 import { Button, Modal } from "antd";
+import Queries from "../../../services/queries.services";
 
 const LoginModal = ({
     visibility,
@@ -12,11 +13,10 @@ const LoginModal = ({
     initInstance,
     setInitInstance,
     awaitMessage,
-    getStatusInstanceAxios,
     openMessage,
 }) => {
     const handleCloseModal = () => {
-        getStatusInstanceAxios()
+        Queries.getStatusInstance(idInstance, apiTokenInstance)
             .then((res) => {
                 if (res.data.statusInstance === "online") {
                     if (initInstance) {
@@ -24,7 +24,6 @@ const LoginModal = ({
                         setAddChatModalVisibility(true);
                         awaitMessage();
                     }
-                    openMessage("success", "Успешный вход");
                     closeModal();
                 } else {
                     openMessage(

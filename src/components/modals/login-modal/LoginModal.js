@@ -12,14 +12,30 @@ const LoginModal = ({
     initInstance,
     setInitInstance,
     awaitMessage,
+    getStatusInstanceAxios,
+    openMessage,
 }) => {
     const handleCloseModal = () => {
-        closeModal();
-        if (initInstance) {
-            setAddChatModalVisibility(true);
-            setInitInstance(false);
-            awaitMessage();
-        }
+        getStatusInstanceAxios()
+            .then((res) => {
+                if (res.data.statusInstance === "online") {
+                    if (initInstance) {
+                        setInitInstance(false);
+                        setAddChatModalVisibility(true);
+                        awaitMessage();
+                    }
+                    openMessage("success", "Успешный вход");
+                    closeModal();
+                } else {
+                    openMessage(
+                        "error",
+                        "Ваш аккаунт не может принимать/отправлять сообщения или сокет закрыт. Проверьте настройки"
+                    );
+                }
+            })
+            .catch(() => {
+                openMessage("error", "Ошибка при инициализации инстанса. Проверьте учётные данные и попробуйте снова.");
+            });
     };
 
     return (

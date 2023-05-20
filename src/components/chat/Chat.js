@@ -13,7 +13,7 @@ const Chat = ({ messages, currentContactPhone }) => {
                     <p style={{ opacity: 0.4 }}>Здесь будет история переписки. Начните общение.</p>
                 )
             ) : (
-                <p style={{ opacity: 0.4 }}>Создате чат для начала переписки.</p>
+                <p style={{ opacity: 0.4 }}>Создайте чат для начала переписки.</p>
             )}
         </div>
     );

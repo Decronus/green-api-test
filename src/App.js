@@ -24,6 +24,12 @@ function App() {
         ],
     });
 
+    const getStatusInstanceAxios = (body) => {
+        return axiosInstance.get(
+            `https://api.green-api.com/waInstance${idInstance}/getStatusInstance/${apiTokenInstance}`
+        );
+    };
+
     const sendMessageAxios = (body) => {
         return axiosInstance.post(
             `https://api.green-api.com/waInstance${idInstance}/SendMessage/${apiTokenInstance}`,
@@ -87,13 +93,16 @@ function App() {
                     }
 
                     deleteNotificationAxios(receiptId)
-                        .then(() => setTimeout(awaitMessage(), 0))
+                        .then(() => setTimeout(awaitMessage, 0))
                         .catch(() => deleteNotificationAxios(receiptId));
                 } else {
-                    setTimeout(awaitMessage(), 0);
+                    setTimeout(awaitMessage, 0);
                 }
             })
-            .catch(() => setTimeout(awaitMessage(), 0));
+            .catch((error) => {
+                setTimeout(awaitMessage, 2000);
+                console.log("error", error);
+            });
     };
 
     const saveContactPhone = (value) => {
@@ -151,6 +160,8 @@ function App() {
                         initInstance={initInstance}
                         setInitInstance={setInitInstance}
                         awaitMessage={awaitMessage}
+                        getStatusInstanceAxios={getStatusInstanceAxios}
+                        openMessage={openMessage}
                     />
                 )}
             </div>

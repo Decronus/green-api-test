@@ -5,8 +5,7 @@ import MessageInput from "./components/message-input/MessageInput";
 import LoginModal from "./components/modals/login-modal/LoginModal";
 import AddChatModal from "./components/modals/add-chat-modal/AddChatModal";
 import Chat from "./components/chat/Chat";
-import axiosInstance from "./utils/axios";
-import Queries from "./services/queries.services";
+import { sendMessageQuery, receiveNotificationQuery, deleteNotificationQuery } from "./utils/functions/api.queries";
 import { message } from "antd";
 
 function App() {
@@ -24,31 +23,6 @@ function App() {
             { text: "Example text 2", me: false },
         ],
     });
-
-    // const getStatusInstanceAxios = () => {
-    //     return axiosInstance.get(
-    //         `https://api.green-api.com/waInstance${idInstance}/getStatusInstance/${apiTokenInstance}`
-    //     );
-    // };
-
-    // const sendMessageAxios = (body) => {
-    //     return axiosInstance.post(
-    //         `https://api.green-api.com/waInstance${idInstance}/SendMessage/${apiTokenInstance}`,
-    //         body
-    //     );
-    // };
-
-    // const receiveNotificationAxios = () => {
-    //     return axiosInstance.get(
-    //         `https://api.green-api.com/waInstance${idInstance}/ReceiveNotification/${apiTokenInstance}`
-    //     );
-    // };
-
-    // const deleteNotificationAxios = (receiptId) => {
-    //     return axiosInstance.delete(
-    //         `https://api.green-api.com/waInstance${idInstance}/DeleteNotification/${apiTokenInstance}/${receiptId}`
-    //     );
-    // };
 
     const scrollPageToBottom = () => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
@@ -70,7 +44,7 @@ function App() {
                 chatId: `${currentContactPhone}@c.us`,
                 message: sendingMessage,
             };
-            Queries.sendMessage(idInstance, apiTokenInstance, body)
+            sendMessageQuery(idInstance, apiTokenInstance, body)
                 .then(() => {
                     updateMessages(message, true);
                     setSendingMessage("");
@@ -81,7 +55,7 @@ function App() {
     };
 
     const awaitMessage = () => {
-        Queries.receiveNotification(idInstance, apiTokenInstance)
+        receiveNotificationQuery(idInstance, apiTokenInstance)
             .then((res) => {
                 if (res.data) {
                     const resBody = res.data.body;
@@ -93,9 +67,9 @@ function App() {
                         updateMessages(message, false, contact);
                     }
 
-                    Queries.deleteNotification(idInstance, apiTokenInstance, receiptId)
+                    deleteNotificationQuery(idInstance, apiTokenInstance, receiptId)
                         .then(() => setTimeout(awaitMessage, 0))
-                        .catch(() => Queries.deleteNotification(idInstance, apiTokenInstance, receiptId));
+                        .catch(() => deleteNotificationQuery(idInstance, apiTokenInstance, receiptId));
                 } else {
                     setTimeout(awaitMessage, 0);
                 }

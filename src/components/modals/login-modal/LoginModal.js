@@ -1,6 +1,6 @@
 import "../style.css";
 import { Button, Modal } from "antd";
-import Queries from "../../../services/queries.services";
+import { getStatusInstanceQuery } from "../../../utils/functions/api.queries";
 
 const LoginModal = ({
     visibility,
@@ -16,7 +16,7 @@ const LoginModal = ({
     openMessage,
 }) => {
     const handleCloseModal = () => {
-        Queries.getStatusInstance(idInstance, apiTokenInstance)
+        getStatusInstanceQuery(idInstance, apiTokenInstance)
             .then((res) => {
                 if (res.data.statusInstance === "online") {
                     if (initInstance) {
